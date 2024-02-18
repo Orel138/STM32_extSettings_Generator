@@ -1,0 +1,22 @@
+{
+    "ProjectFiles": {
+      "HeaderPath": ["../../Inc", "../../Another/Path"]
+    },
+    "Groups": {
+      "Doc": ["$PROJ_DIR$/../readme.txt"],
+      "Lib": [
+        "../Src/app_main.c",
+        "../Inc/app_main.h"
+        ],
+      "Drivers/BSP/MyRefBoard": [
+        "C:/MyRefBoard/BSP/board_init.c",
+        "C:/MyRefBoard/BSP/board_init.h"
+        ]
+    },
+    "Others": {
+      "Define": ["DEFINE_PREPROCESSOR"],
+      "HALModule": ["I2S",
+                    "I2C"
+                  ]
+    }
+}
