@@ -15,13 +15,16 @@ class ExtSettingsManager:
         """Loads additional configurations from a JSON file."""
         return self.read_input_json(file_path)
 
-    def generate_section(self, file, section_name, data):
+    def generate_section(self, file, section_name, data, append_semicolon=False):
         """Generates a section in the output file for each key-value pair in the data."""
-        for key, value in data.items():
+        keys = list(data.keys())
+        for i, key in enumerate(keys):
+            value = data[key]
             if isinstance(value, list):
                 value_str = ';'.join(value)
+                if append_semicolon or (section_name == "Groups" and i < len(keys) - 1):
+                    value_str += ';'
                 file.write(f"{key}={value_str}\n")
-        file.write('\n')  # Adds a newline after each section for better readability
 
     def is_configuration_split(self, data):
         """Determines if the configuration data is split into sub-configurations or direct sections."""
@@ -38,12 +41,15 @@ class ExtSettingsManager:
                     for section_name, section_data in config_data.items():
                         prefixed_section_name = f"[{config_name}:{section_name}]\n"
                         file.write(prefixed_section_name)
+                        # Append semicolon logic here if needed, based on section
                         self.generate_section(file, section_name, section_data)
             else:
-                for section_name, section_data in data.items():
+                for i, (section_name, section_data) in enumerate(data.items()):
                     section_header = f"[{section_name}]\n"
                     file.write(section_header)
-                    self.generate_section(file, section_name, section_data)
+                    # Decide on appending semicolon based on section type and potentially item position
+                    append_semicolon = section_name == "ProjectFiles"
+                    self.generate_section(file, section_name, section_data, append_semicolon=append_semicolon)
 
     def insert_into_section(self, main_config, additional_config, section, section_name=None):
         """Generic function to insert configurations into a specified section."""
@@ -62,7 +68,7 @@ class ExtSettingsManager:
 # Usage example
 if __name__ == "__main__":
     input_json_path = 'input-test.json'
-    output_extsettings_path = '.ExtSettings'
+    output_extsettings_path = '.extSettings'
 
     manager = ExtSettingsManager(input_json_path, output_extsettings_path)
     data = manager.read_input_json()
