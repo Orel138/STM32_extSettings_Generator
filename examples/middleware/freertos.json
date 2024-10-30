@@ -1,0 +1,60 @@
+{
+  "name": "FreeRTOS",
+  "versions": [
+    {
+      "version": "10.5.1",
+      "variants": [
+        {
+          "name": "CM4",
+          "description": "Configuration for Cortex-M4",
+          "variables": {
+            "middleware_path": {
+              "type": "path",
+              "description": "Path to FreeRTOS middleware directory",
+              "default": "../../../../Middlewares/Third_Party/FreeRTOS"
+            },
+            "heap_type": {
+              "type": "choice",
+              "description": "Heap memory management implementation",
+              "choices": ["heap_1", "heap_2", "heap_3", "heap_4", "heap_5"],
+              "default": "heap_4"
+            },
+            "max_priorities": {
+              "type": "number",
+              "description": "Maximum number of priorities",
+              "default": 5,
+              "min": 1,
+              "max": 16
+            }
+          },
+          "ProjectFiles": {
+            "HeaderPath": [
+              "{middleware_path}/Source/include",
+              "{middleware_path}/Source/portable/GCC/ARM_CM4F",
+              "{middleware_path}/Source/CMSIS_RTOS_V2"
+            ]
+          },
+          "Groups": {
+            "Source": [
+              "{middleware_path}/tasks.c",
+              "{middleware_path}/queue.c",
+              "{middleware_path}/list.c",
+              "{middleware_path}/timers.c"
+            ],
+            "Source/portable/MemMang": [
+              "{middleware_path}/{heap_type}.c"
+            ]
+          },
+          "Others": {
+            "Define": [
+              "USE_FREERTOS",
+              "configUSE_PREEMPTION=1",
+              "configMAX_PRIORITIES={max_priorities}"
+            ],
+            "HALModule": []
+          }
+        }
+      ]
+    }
+  ]
+}
